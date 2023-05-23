@@ -15,3 +15,35 @@ Creating new Security group:
 
 	aws ec2 create-security-group --group-name my-sg --description "This is my first security group" --vpc-id xxxxx
 
+Creating firewall rule for the security group:
+	aws ec2 authorize-security-group-ingress /
+	--group-id xxxxx /
+	--protocol tcp /
+	--port 22  /
+	--cidr myip/32
+Creating and downloading key-pair:
+	aws ec2 create-key-pair  \
+	--key-name MyKpCli  \
+	--query 'keyMaterial' \
+	--output text > MyKpCli.pem
+
+---------IAM----------------
+	aws iam create-group --group-name MyGroupCli
+	aws iam create-user --user-name MyUserCli
+	aws iam add-user-to-group --user-name MyUserCli --group-name MyGorupCli
+// Attaching permission and policies to group
+	aws iam attach-group-policy --group-name MyGroupCli --policy-arn xxxxxxxxx
+// Attaching permission and policies to User
+	aws iam attach-user-policies --user-name MyUserCli --policy-arn xxxxxxxxxx
+// Getting arn of a policy with known name 
+	aws iam list-policies --query ' Polices[?Policy Name==`AmazonEc2FullAccess`] .{ARN:arn}' --output text
+// Listing attached policiy to a group
+	aws iam list-attached-group-polices --group-name MyGroupCli
+// Creating credentials for new user
+	aws iam create-login-profile --user-name MyUserCli --password xxxxxxx --password-reset-required
+// Creating policy to allow change of password on first login 
+	aws create-policy --policy-name changePwd --policy-document file://changePwd.json
+// Creating access key for the user to access cli
+	aws create-access-key --user-name MyUserCli
+
+
